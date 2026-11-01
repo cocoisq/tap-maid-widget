@@ -19,7 +19,7 @@ jobs:
 
       - name: Extract Android project
         run: |
-          unzip -o TapMaidWidget_Android_ReadyToUpload.zip -d extracted
+          unzip -o tap-maid-widget-updated-source.zip -d extracted
 
       - name: Package Android source
         run: |
