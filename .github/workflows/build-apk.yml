@@ -12,6 +12,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,9 +32,28 @@ jobs:
         with:
           gradle-version: '8.9'
 
+      - name: Create JVM compatibility settings
+        run: |
+          cat > "$RUNNER_TEMP/align-jvm.init.gradle" <<'EOF'
+          allprojects {
+              tasks.configureEach { task ->
+                  if (task.class.name.contains("KotlinCompile")) {
+                      task.kotlinOptions.jvmTarget = "17"
+                  }
+                  if (task instanceof org.gradle.api.tasks.compile.JavaCompile) {
+                      task.sourceCompatibility = "17"
+                      task.targetCompatibility = "17"
+                  }
+              }
+          }
+          EOF
+
       - name: Build debug APK
         run: |
-          gradle --no-daemon -p extracted/TapMaidWidget_Release assembleDebug
+          gradle --no-daemon \
+            -I "$RUNNER_TEMP/align-jvm.init.gradle" \
+            -p extracted/TapMaidWidget_Release \
+            assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
