@@ -21,6 +21,11 @@ jobs:
         run: |
           unzip -o TapMaidWidget_Android_ReadyToUpload.zip -d extracted
 
+      - name: Package Android source
+        run: |
+          cd extracted
+          zip -qr "$GITHUB_WORKSPACE/tap-maid-source.zip" TapMaidWidget_Release
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -56,5 +61,13 @@ jobs:
         with:
           name: tap-maid-debug-apk
           path: extracted/TapMaidWidget_Release/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Android source
+        uses: actions/upload-artifact@v4
+        with:
+          name: tap-maid-source
+          path: tap-maid-source.zip
           if-no-files-found: error
           retention-days: 14
