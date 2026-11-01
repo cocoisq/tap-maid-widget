@@ -38,11 +38,7 @@ jobs:
           allprojects {
               tasks.configureEach { task ->
                   if (task.class.name.contains("KotlinCompile")) {
-                      task.kotlinOptions.jvmTarget = "17"
-                  }
-                  if (task instanceof org.gradle.api.tasks.compile.JavaCompile) {
-                      task.sourceCompatibility = "17"
-                      task.targetCompatibility = "17"
+                      task.kotlinOptions.jvmTarget = "1.8"
                   }
               }
           }
